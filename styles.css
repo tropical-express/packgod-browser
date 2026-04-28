@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  background: black;
+  color: lime;
+  font-family: Arial, sans-serif;
+}
+
+/* ðŸ’€ BOOT SCREEN */
+#bootScreen {
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+#bootImage {
+  width: 60%;
+  max-width: 600px;
+}
+
+/* ðŸŒ APP */
+#topbar {
+  display: flex;
+  padding: 10px;
+  background: #111;
+}
+
+#url {
+  flex: 1;
+  padding: 8px;
+}
+
+button {
+  padding: 8px 12px;
+  background: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#webview {
+  width: 100%;
+  height: calc(100vh - 50px);
+}

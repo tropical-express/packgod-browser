@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Packgod Browser 💀</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<!-- 💀 BOOT SCREEN -->
+<div id="bootScreen">
+  <img id="bootImage" src="assets/boot.png">
+  <p>CLICK TO ENTER 💀</p>
+</div>
+
+<!-- 🌐 APP -->
+<div id="app" style="display:none;">
+  <div id="topbar">
+    <input id="url" placeholder="type a site (google.com)">
+    <button id="go">GO</button>
+  </div>
+
+  <webview id="webview"></webview>
+</div>
+
+<script src="renderer.js"></script>
+
+</body>
+</html>

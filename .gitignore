@@ -1,0 +1,11 @@
+# Uneccessary folders
+node_modules/
+
+# Build Input
+dist/
+
+# Enviroment variables
+*.env
+
+# Powershell junk
+*.ps1
