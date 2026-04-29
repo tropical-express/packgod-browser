@@ -29,16 +29,16 @@ Go to the **Releases** section of this repository to download:
 
 ### 1. Clone the repo
 
-git clone https://github.com/tropical-express/packgod-browser.git cd
-packgod-browser
+``git clone https://github.com/tropical-express/packgod-browser.git 
+cd packgod-browser``
 
 ### 2. Install dependencies
 
-npm install
+``npm install``
 
 ### 3. Run the app
 
-npm start
+``npm start``
 
 ------------------------------------------------------------------------
 
