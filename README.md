@@ -1,4 +1,14 @@
 # 💀 Packgod Browser
+![GitHub stars](https://img.shields.io/github/stars/tropical-express/packgod-browser?style=flat)
+![GitHub forks](https://img.shields.io/github/forks/tropical-express/packgod-browser?style=flat)
+![GitHub issues](https://img.shields.io/github/issues/tropical-express/packgod-browser?style=flat)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/tropical-express/packgod-browser?style=flat)
+![license](https://img.shields.io/github/license/tropical-express/packgod-browser?style=flat)
+![last commit](https://img.shields.io/github/last-commit/tropical-express/packgod-browser?style=flat)
+![electron](https://img.shields.io/badge/electron-framework-47848F?style=flat&logo=electron)
+![node](https://img.shields.io/badge/node.js-18%2B-339933?style=flat&logo=node.js&logoColor=white)
+![chromium](https://img.shields.io/badge/chromium-based-4285F4?style=flat&logo=googlechrome&logoColor=white)
+![status](https://img.shields.io/badge/status-experimental-orange?style=flat)
 
 A chaotic Electron-based custom browser with a boot screen, sound
 effects, and meme-style UI.
@@ -75,4 +85,4 @@ Output: dist/
 
 ## 💀 Author
 
-Packgod Browser project
+Tropical Express
