@@ -1,0 +1,59 @@
+name: Debug Workflow
+
+on:
+  workflow_dispatch:   # lets you run it manually from GitHub UI
+  push:
+  pull_request:
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Show environment info
+        run: |
+          echo "=== SYSTEM INFO ==="
+          uname -a
+          echo ""
+          echo "=== NODE VERSION ==="
+          node -v || echo "Node not installed yet"
+          npm -v || echo "npm not installed yet"
+          echo ""
+          echo "=== PATH ==="
+          echo $PATH
+
+      - name: List repository files
+        run: |
+          echo "=== FILE TREE ==="
+          ls -R
+
+      - name: Show package.json (if exists)
+        run: |
+          if [ -f package.json ]; then
+            echo "=== package.json ==="
+            cat package.json
+          else
+            echo "No package.json found"
+          fi
+
+      - name: Install dependencies (debug mode)
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --verbose
+          elif [ -f package.json ]; then
+            npm install --verbose
+          else
+            echo "No Node project detected"
+          fi
+
+      - name: Try build (if available)
+        run: |
+          npm run build --if-present || echo "No build script or build failed"
+
+      - name: Show final directory state
+        run: |
+          echo "=== FINAL FILE STATE ==="
+          ls -R

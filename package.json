@@ -18,8 +18,13 @@
       "assets/**/*"
     ],
     "asar": true,
+
     "win": {
       "target": "nsis"
+    },
+
+    "linux": {
+      "target": ["deb"]
     }
   }
 }
