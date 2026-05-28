@@ -1,0 +1,77 @@
+name: Build Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app
+        run: npm run build
+
+      # Electron Builder example
+      # Remove if your project uses another build system
+      - name: Build Electron packages
+        run: npm run dist
+
+      - name: Generate SHA256 checksums
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path dist -File | ForEach-Object {
+            $hash = Get-FileHash $_.FullName -Algorithm SHA256
+            "$($hash.Hash)  $($_.Name)" | Out-File -Append dist/SHA256SUMS.txt
+          }
+
+      - name: Create tar.xz archive
+        shell: pwsh
+        run: |
+          tar -cJf packgod-browser.tar.xz dist
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-files
+          path: |
+            dist/**/*.exe
+            dist/**/*.msi
+            dist/**/*.deb
+            dist/**/*.AppImage
+            dist/**/*.zip
+            dist/**/*.yml
+            dist/SHA256SUMS.txt
+            packgod-browser.tar.xz
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/**/*.exe
+            dist/**/*.msi
+            dist/**/*.deb
+            dist/**/*.AppImage
+            dist/**/*.zip
+            dist/**/*.yml
+            dist/SHA256SUMS.txt
+            packgod-browser.tar.xz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
