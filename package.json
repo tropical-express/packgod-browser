@@ -1,30 +1,105 @@
 {
   "name": "packgod-browser",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "description": "Custom Electron browser project",
+  "author": "tropical-express",
+  "license": "MIT",
+
   "main": "main.js",
+
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder"
+    "dev": "electron .",
+    "dist": "electron-builder",
+    "pack": "electron-builder --dir",
+    "release": "electron-builder --publish always"
   },
+
   "devDependencies": {
     "electron": "^30.0.0",
     "electron-builder": "^24.13.3"
   },
+
   "build": {
     "appId": "com.packgod.browser",
+
     "productName": "Packgod Browser",
+
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+
+    "directories": {
+      "output": "dist",
+      "buildResources": "assets"
+    },
+
     "files": [
       "**/*",
+      "!dist/**/*",
+      "!node_modules/.cache/**/*"
+    ],
+
+    "extraResources": [
       "assets/**/*"
     ],
+
     "asar": true,
 
+    "compression": "maximum",
+
+    "publish": [
+      {
+        "provider": "github"
+      }
+    ],
+
     "win": {
-      "target": "nsis"
+      "icon": "assets/icon.ico",
+
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "msi",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     },
 
     "linux": {
-      "target": ["deb"]
+      "icon": "assets/icon.png",
+
+      "category": "Network",
+
+      "target": [
+        "deb",
+        "tar.xz",
+        "AppImage"
+      ]
+    },
+
+    "mac": {
+      "target": [
+        "dmg"
+      ]
     }
   }
 }
