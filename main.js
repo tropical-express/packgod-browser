@@ -9,16 +9,33 @@ function createWindow() {
 
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+
       contextIsolation: true,
-      nodeIntegration: true,
+      nodeIntegration: false,
       webviewTag: true
     }
   });
 
   win.loadFile("index.html");
 
-  // 💀 dev tools (remove later if you want)
-  win.webContents.openDevTools();
+  // 💀 DevTools (only during development)
+  if (process.env.NODE_ENV === "dev") {
+    win.webContents.openDevTools();
+  }
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+});
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});

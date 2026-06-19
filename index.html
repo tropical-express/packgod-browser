@@ -8,20 +8,32 @@
 
 <body>
 
-<!-- 💀 BOOT SCREEN -->
-<div id="bootScreen">
-  <img id="bootImage" src="assets/boot.png">
-  <p>CLICK TO ENTER 💀</p>
+<!-- LOADING BAR -->
+<div id="loadingBar"></div>
+
+<!-- TOP BAR -->
+<div id="topbar">
+
+  <button id="back">←</button>
+  <button id="forward">→</button>
+  <button id="reload">⟳</button>
+  <button id="home">🏠</button>
+
+  <input id="url" placeholder="type a site (google.com)">
+  <button id="go">GO</button>
+
+  <button id="bookmark">★</button>
+
 </div>
 
-<!-- 🌐 APP -->
-<div id="app" style="display:none;">
-  <div id="topbar">
-    <input id="url" placeholder="type a site (google.com)">
-    <button id="go">GO</button>
-  </div>
+<!-- TABS -->
+<div id="tabs"></div>
 
-  <webview id="webview"></webview>
+<!-- APP -->
+<div id="app">
+
+  <webview id="webview" src="https://google.com"></webview>
+
 </div>
 
 <script src="renderer.js"></script>

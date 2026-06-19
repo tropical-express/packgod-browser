@@ -2,48 +2,71 @@ body {
   margin: 0;
   background: black;
   color: lime;
-  font-family: Arial, sans-serif;
-}
-
-/* ðŸ’€ BOOT SCREEN */
-#bootScreen {
-  position: fixed;
-  inset: 0;
-  background: black;
+  font-family: Arial;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  z-index: 9999;
 }
 
-#bootImage {
-  width: 60%;
-  max-width: 600px;
+/* LOADING BAR */
+#loadingBar {
+  height: 3px;
+  width: 0%;
+  background: lime;
+  transition: width 0.2s;
 }
 
-/* ðŸŒ APP */
+/* TOPBAR */
 #topbar {
   display: flex;
-  padding: 10px;
+  gap: 6px;
+  padding: 8px;
   background: #111;
+  border-bottom: 1px solid #222;
+}
+
+button {
+  background: #222;
+  color: lime;
+  border: 1px solid #333;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #333;
 }
 
 #url {
   flex: 1;
-  padding: 8px;
+  background: black;
+  color: lime;
+  border: 1px solid #333;
+  padding: 6px;
 }
 
-button {
-  padding: 8px 12px;
-  background: red;
-  color: white;
-  border: none;
+/* TABS */
+#tabs {
+  display: flex;
+  background: #0a0a0a;
+  border-bottom: 1px solid #222;
+}
+
+.tab {
+  padding: 6px 10px;
+  border-right: 1px solid #222;
   cursor: pointer;
 }
 
-#webview {
-  width: 100%;
-  height: calc(100vh - 50px);
+.tab.active {
+  background: #222;
+}
+
+/* WEBVIEW */
+#app {
+  flex: 1;
+  display: flex;
+}
+
+webview {
+  flex: 1;
 }

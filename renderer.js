@@ -7,46 +7,96 @@ const input = document.getElementById("url");
 const button = document.getElementById("go");
 const webview = document.getElementById("webview");
 
-// 🔊 SOUND (must be triggered by click)
+// ----------------------
+// SAFETY CHECKS
+// ----------------------
+if (!bootScreen || !app || !input || !webview) {
+  console.error("Missing DOM elements");
+}
+
+// ----------------------
+// SOUND
+// ----------------------
 const bootSound = new Audio("assets/muycaliente.mp3");
 bootSound.preload = "auto";
 
-// 💀 ENTER APP FUNCTION
+// ----------------------
+// URL FIXER (IMPORTANT)
+// ----------------------
+function fixUrl(url) {
+  url = url.trim();
+
+  if (!url) return "https://google.com";
+
+  if (
+    !url.startsWith("http://") &&
+    !url.startsWith("https://")
+  ) {
+    return "https://" + url;
+  }
+
+  return url;
+}
+
+// ----------------------
+// ENTER APP
+// ----------------------
 function enterApp() {
   console.log("Boot clicked");
 
-  // reset + play sound
-  bootSound.currentTime = 0;
-  bootSound.volume = 1.0;
+  try {
+    bootSound.currentTime = 0;
+    bootSound.volume = 1.0;
 
-  bootSound.play()
-    .then(() => console.log("sound playing"))
-    .catch(err => console.log("audio blocked:", err));
+    const playPromise = bootSound.play();
 
-  // switch UI
-  bootScreen.style.display = "none";
-  app.style.display = "block";
-}
-
-// attach to BOTH (reliable)
-bootScreen.addEventListener("click", enterApp);
-bootImage.addEventListener("click", enterApp);
-
-// 🌐 NAVIGATION
-function go() {
-  let url = input.value.trim();
-  if (!url) return;
-
-  if (!url.startsWith("http")) {
-    url = "https://" + url;
+    if (playPromise !== undefined) {
+      playPromise.catch(err => {
+        console.log("Audio blocked:", err);
+      });
+    }
+  } catch (e) {
+    console.log("Audio error:", e);
   }
 
-  console.log("Loading:", url);
-  webview.src = url;
+  bootScreen.style.opacity = "0";
+
+  setTimeout(() => {
+    bootScreen.style.display = "none";
+    app.style.display = "flex";
+  }, 250);
 }
 
+// ----------------------
+// EVENTS (BOOT)
+// ----------------------
+bootScreen?.addEventListener("click", enterApp);
+bootImage?.addEventListener("click", enterApp);
+
+// ----------------------
+// NAVIGATION
+// ----------------------
+function go() {
+  let url = fixUrl(input.value);
+
+  console.log("Loading:", url);
+
+  webview.src = url;
+  input.value = url;
+}
+
+// ----------------------
+// BUTTON + ENTER KEY
+// ----------------------
 button.addEventListener("click", go);
 
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") go();
+});
+
+// ----------------------
+// OPTIONAL: SYNC URL BAR
+// ----------------------
+webview.addEventListener("did-navigate", (e) => {
+  input.value = e.url;
 });
