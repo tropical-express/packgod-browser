@@ -1,19 +1,39 @@
-name: Build Release
+name: Release
 
 on:
-  workflow_dispatch:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 permissions:
   contents: write
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+
   build:
-    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+          - os: windows-latest
+            target: --win
+
+          - os: ubuntu-latest
+            target: --linux
+
+          - os: macos-latest
+            target: --mac
+
+    runs-on: ${{ matrix.os }}
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -26,52 +46,85 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build app
-        run: npm run build
-
-      # Electron Builder example
-      # Remove if your project uses another build system
-      - name: Build Electron packages
-        run: npm run dist
-
-      - name: Generate SHA256 checksums
-        shell: pwsh
+      - name: Verify runtime files
+        shell: bash
         run: |
-          Get-ChildItem -Path dist -File | ForEach-Object {
-            $hash = Get-FileHash $_.FullName -Algorithm SHA256
-            "$($hash.Hash)  $($_.Name)" | Out-File -Append dist/SHA256SUMS.txt
+          test -d assets
+          test -d utils
+
+          test -f main.js
+          test -f preload.js
+
+          test -f index.html
+          test -f renderer.js
+          test -f styles.css
+
+      - name: Build packages
+        run: npx electron-builder ${{ matrix.target }}
+
+      - name: Generate .sha256 files (Windows)
+
+        if: runner.os == 'Windows'
+
+        shell: pwsh
+
+        run: |
+          Get-ChildItem dist -File | ForEach-Object {
+
+            if ($_.Extension -ne ".sha256") {
+
+              $hash = Get-FileHash $_.FullName -Algorithm SHA256
+
+              $output = "$($hash.Hash)  $($_.Name)"
+
+              Set-Content -Path "$($_.FullName).sha256" -Value $output
+
+            }
+
           }
 
-      - name: Create tar.xz archive
-        shell: pwsh
+      - name: Generate .sha256 files (Linux/macOS)
+
+        if: runner.os != 'Windows'
+
+        shell: bash
+
         run: |
-          tar -cJf packgod-browser.tar.xz dist
+          find dist -type f ! -name "*.sha256" | while read file
+          do
+            sha256sum "$file" > "$file.sha256"
+          done
 
       - name: Upload artifacts
+
         uses: actions/upload-artifact@v4
+
         with:
-          name: release-files
-          path: |
-            dist/**/*.exe
-            dist/**/*.msi
-            dist/**/*.deb
-            dist/**/*.AppImage
-            dist/**/*.zip
-            dist/**/*.yml
-            dist/SHA256SUMS.txt
-            packgod-browser.tar.xz
+          name: ${{ runner.os }}
+
+          path: dist/
+
+  release:
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Download artifacts
+
+        uses: actions/download-artifact@v4
+
+        with:
+          path: artifacts
 
       - name: Create GitHub Release
+
         uses: softprops/action-gh-release@v2
+
         with:
-          files: |
-            dist/**/*.exe
-            dist/**/*.msi
-            dist/**/*.deb
-            dist/**/*.AppImage
-            dist/**/*.zip
-            dist/**/*.yml
-            dist/SHA256SUMS.txt
-            packgod-browser.tar.xz
+          files: artifacts/**/*
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
