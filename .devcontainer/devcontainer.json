@@ -2,11 +2,7 @@
   "name": "Packgod Browser Dev",
   "image": "mcr.microsoft.com/devcontainers/base:alpine",
 
-  "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {}
-  },
-
-  "postCreateCommand": "npm ci",
+  "postCreateCommand": "apk add --no-cache github-cli && npm ci",
 
   "customizations": {
     "vscode": {
