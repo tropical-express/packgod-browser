@@ -1,0 +1,19 @@
+{
+  "name": "Packgod Browser Dev",
+  "image": "mcr.microsoft.com/devcontainers/base:alpine",
+
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "postCreateCommand": "npm ci",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.js-debug",
+        "dbaeumer.vscode-eslint"
+      ]
+    }
+  }
+}
