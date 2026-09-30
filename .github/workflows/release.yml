@@ -24,17 +24,17 @@
               artifact: Windows
 
             - os: ubuntu-latest
-              target: --linux deb AppImage tar.xz
+              target: --linux
               artifact: Linux
 
       runs-on: ${{ matrix.os }}
 
       steps:
         - name: Checkout repository
-          uses: actions/checkout@v4
+          uses: actions/checkout@v5
 
         - name: Setup Node.js
-          uses: actions/setup-node@v4
+          uses: actions/setup-node@v5
           with:
             node-version: 22
             cache: npm
@@ -56,7 +56,7 @@
             test -f styles.css
 
         - name: Build packages
-          run: npx electron-builder ${{ matrix.target }}
+          run: npx electron-builder ${{ matrix.target }} --publish never
 
         - name: Upload build artifacts
           uses: actions/upload-artifact@v4
@@ -70,7 +70,7 @@
 
       steps:
         - name: Download build artifacts
-          uses: actions/download-artifact@v4
+          uses: actions/download-artifact@v5
           with:
             path: artifacts
 
