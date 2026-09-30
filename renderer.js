@@ -1,5 +1,4 @@
 const bootScreen = document.getElementById("bootScreen");
-const bootImage = document.getElementById("bootImage");
 
 const app = document.getElementById("app");
 
@@ -71,7 +70,6 @@ function enterApp() {
 // EVENTS (BOOT)
 // ----------------------
 bootScreen?.addEventListener("click", enterApp);
-bootImage?.addEventListener("click", enterApp);
 
 // ----------------------
 // NAVIGATION

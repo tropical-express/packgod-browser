@@ -1,130 +1,97 @@
-name: Release
+  name: Release
 
-on:
-  push:
-    tags:
-      - "v*"
+  on:
+    push:
+      tags:
+        - "v*"
 
-permissions:
-  contents: write
+  permissions:
+    contents: write
 
-concurrency:
-  group: release-${{ github.ref }}
-  cancel-in-progress: true
+  concurrency:
+    group: release-${{ github.ref }}
+    cancel-in-progress: true
 
-jobs:
+  jobs:
+    build:
+      strategy:
+        fail-fast: false
 
-  build:
+        matrix:
+          include:
+            - os: windows-latest
+              target: --win
+              artifact: Windows
 
-    strategy:
-      fail-fast: false
+            - os: ubuntu-latest
+              target: --linux deb AppImage tar.xz
+              artifact: Linux
 
-      matrix:
-        include:
-          - os: windows-latest
-            target: --win
+      runs-on: ${{ matrix.os }}
 
-          - os: ubuntu-latest
-            target: --linux
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
 
-          - os: macos-latest
-            target: --mac
+        - name: Setup Node.js
+          uses: actions/setup-node@v4
+          with:
+            node-version: 22
+            cache: npm
 
-    runs-on: ${{ matrix.os }}
+        - name: Install dependencies
+          run: npm ci
 
-    steps:
+        - name: Verify runtime files
+          shell: bash
+          run: |
+            test -d assets
+            test -d utils
+            
+            test -f main.js
+            test -f preload.js
+            
+            test -f index.html
+            test -f renderer.js
+            test -f styles.css
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
+        - name: Build packages
+          run: npx electron-builder ${{ matrix.target }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
+        - name: Upload build artifacts
+          uses: actions/upload-artifact@v4
+          with:
+            name: ${{ matrix.artifact }}
+            path: dist/
 
-      - name: Install dependencies
-        run: npm ci
+    release:
+      needs: build
+      runs-on: ubuntu-latest
 
-      - name: Verify runtime files
-        shell: bash
-        run: |
-          test -d assets
-          test -d utils
+      steps:
+        - name: Download build artifacts
+          uses: actions/download-artifact@v4
+          with:
+            path: artifacts
 
-          test -f main.js
-          test -f preload.js
+        - name: Generate combined SHA256SUMS
+          shell: bash
+          run: |
+            cd artifacts
+            
+            find . -type f -print0 |
+              sort -z |
+              xargs -0 sha256sum > SHA256SUMS
 
-          test -f index.html
-          test -f renderer.js
-          test -f styles.css
-
-      - name: Build packages
-        run: npx electron-builder ${{ matrix.target }}
-
-      - name: Generate .sha256 files (Windows)
-
-        if: runner.os == 'Windows'
-
-        shell: pwsh
-
-        run: |
-          Get-ChildItem dist -File | ForEach-Object {
-
-            if ($_.Extension -ne ".sha256") {
-
-              $hash = Get-FileHash $_.FullName -Algorithm SHA256
-
-              $output = "$($hash.Hash)  $($_.Name)"
-
-              Set-Content -Path "$($_.FullName).sha256" -Value $output
-
-            }
-
-          }
-
-      - name: Generate .sha256 files (Linux/macOS)
-
-        if: runner.os != 'Windows'
-
-        shell: bash
-
-        run: |
-          find dist -type f ! -name "*.sha256" | while read file
-          do
-            sha256sum "$file" > "$file.sha256"
-          done
-
-      - name: Upload artifacts
-
-        uses: actions/upload-artifact@v4
-
-        with:
-          name: ${{ runner.os }}
-
-          path: dist/
-
-  release:
-
-    needs: build
-
-    runs-on: ubuntu-latest
-
-    steps:
-
-      - name: Download artifacts
-
-        uses: actions/download-artifact@v4
-
-        with:
-          path: artifacts
-
-      - name: Create GitHub Release
-
-        uses: softprops/action-gh-release@v2
-
-        with:
-          files: artifacts/**/*
-
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        - name: Create GitHub Release
+          uses: softprops/action-gh-release@v2
+          with:
+            generate_release_notes: true
+            files: |
+              artifacts/**/*.exe
+              artifacts/**/*.AppImage
+              artifacts/**/*.deb
+              artifacts/**/*.tar.xz
+              artifacts/SHA256SUMS
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

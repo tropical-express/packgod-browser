@@ -1,5 +1,6 @@
 # Uneccessary folders
 node_modules/
+.idea/
 
 # Build Input
 dist/
