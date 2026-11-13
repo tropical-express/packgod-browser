@@ -61,7 +61,7 @@ button { color: inherit; }
   cursor: pointer; font-size: 11px; text-align: left;
 }
 .tab.active { background: #1b2020; color: var(--text); border-color: #303638; border-bottom-color: #1b2020; }
-.tab-label { min-width: 0; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.tab-label { min-width: 0; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; border: 0; padding: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; font: inherit; }
 .tab-close { width: 20px; height: 20px; border: 0; border-radius: 4px; background: transparent; color: #8b9290; cursor: pointer; }
 .tab-close:hover { color: white; background: #343a3b; }
 .new-tab, .tool-button {
@@ -69,6 +69,8 @@ button { color: inherit; }
   border-radius: 6px; background: transparent; color: #aab0ad; cursor: pointer; font-size: 18px;
 }
 .new-tab:hover, .tool-button:hover { background: #24292a; border-color: #353b3c; color: var(--acid); }
+.tool-button:disabled { opacity: .35; cursor: default; }
+.tool-button:disabled:hover { background: transparent; border-color: transparent; color: #aab0ad; }
 .toolbar { height: 49px; padding: 6px 14px 9px; display: flex; align-items: center; gap: 11px; }
 .nav-controls { display: flex; gap: 3px; }
 .tool-button { width: 30px; height: 30px; font-size: 17px; }
