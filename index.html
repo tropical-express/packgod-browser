@@ -1,47 +1,74 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Packgod Browser 💀</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08090a">
+  <title>Packgod Browser</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
+  <div class="app-shell">
+    <header class="browser-chrome">
+      <div class="title-row">
+        <div class="brand-mark" aria-hidden="true">P<span>!</span></div>
+        <div class="brand-copy">
+          <strong>PACKGOD <span>BROWSER</span></strong>
+          <small>BUILT DIFFERENT. BROWSE DIFFERENT.</small>
+        </div>
+        <div class="title-spacer"></div>
+        <div class="chaos-status"><i></i> CHAOS ONLINE</div>
+      </div>
 
-<!-- BOOT SCREEN -->
-<div id="bootScreen">
-  <img id="bootImage" src="assets/boot.png" alt="Packgod Browser boot screen">
-</div>
+      <nav class="tab-strip" aria-label="Browser tabs">
+        <div id="tabs" class="tabs"></div>
+        <button id="newTab" class="new-tab" title="New tab (Ctrl+T)" aria-label="New tab">＋</button>
+      </nav>
 
-<!-- LOADING BAR -->
-<div id="loadingBar"></div>
+      <div class="toolbar">
+        <div class="nav-controls">
+          <button id="back" class="tool-button" title="Back" aria-label="Back">←</button>
+          <button id="forward" class="tool-button" title="Forward" aria-label="Forward">→</button>
+          <button id="reload" class="tool-button" title="Reload" aria-label="Reload">↻</button>
+          <button id="home" class="tool-button" title="Home" aria-label="Home">⌂</button>
+        </div>
+        <form id="addressForm" class="address-wrap">
+          <span class="address-symbol">⌕</span>
+          <input id="url" type="text" spellcheck="false" autocomplete="off"
+            placeholder="Search the web or enter an address…" aria-label="Address and search">
+          <span class="address-hint">CTRL + L</span>
+        </form>
+        <button id="chaosToggle" class="chaos-toggle" aria-pressed="true">
+          <span class="toggle-dot"></span> CHAOS
+        </button>
+      </div>
+    </header>
 
-<!-- TOP BAR -->
-<div id="topbar">
-
-  <button id="back">←</button>
-  <button id="forward">→</button>
-  <button id="reload">⟳</button>
-  <button id="home">🏠</button>
-
-  <input id="url" placeholder="type a site (google.com)">
-  <button id="go">GO</button>
-
-  <button id="bookmark">★</button>
-
-</div>
-
-<!-- TABS -->
-<div id="tabs"></div>
-
-<!-- APP -->
-<div id="app">
-
-  <webview id="webview" src="https://google.com"></webview>
-
-</div>
-
-<script src="renderer.js"></script>
-
+    <main id="homePage" class="home-page">
+      <div class="scanlines" aria-hidden="true"></div>
+      <div class="hero">
+        <div class="eyebrow"><span></span> YOUR BROWSER. YOUR RULES.</div>
+        <div class="hero-title">WELCOME TO<br><span>THE CHAOS.</span></div>
+        <p class="hero-subtitle">A faster way to get where you're going. With absolutely zero chill.</p>
+        <form id="heroSearch" class="hero-search">
+          <span>⌕</span>
+          <input id="heroInput" type="text" autocomplete="off" placeholder="What are we looking for?">
+          <button type="submit">LET'S GO <b>↗</b></button>
+        </form>
+        <div class="quick-links">
+          <button data-url="https://www.google.com">GOOGLE</button>
+          <button data-url="https://www.youtube.com">YOUTUBE</button>
+          <button data-url="https://github.com">GITHUB</button>
+          <button data-url="https://wikipedia.org">WIKIPEDIA</button>
+        </div>
+      </div>
+      <div class="home-footer">
+        <span>PACKGOD BROWSER <b>2.0.0</b></span>
+        <span class="footer-center">NO BORING BROWSING ALLOWED.</span>
+        <span id="statusText">READY WHEN YOU ARE.</span>
+      </div>
+    </main>
+  </div>
+  <script src="renderer.js"></script>
 </body>
 </html>
