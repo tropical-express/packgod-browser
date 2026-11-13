@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap');
-
 :root {
   color-scheme: dark;
   --bg: #08090a;
@@ -18,7 +16,7 @@ html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: Inter, system-ui, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   user-select: none;
 }
 button, input { font: inherit; }
@@ -37,15 +35,15 @@ button { color: inherit; }
 .brand-mark {
   width: 30px; height: 30px; display: grid; place-items: center;
   background: var(--acid); color: #08090a; border-radius: 7px;
-  font: 900 22px/1 'Barlow Condensed', sans-serif; transform: skew(-7deg);
+  font: 900 22px/1 'Arial Narrow', Impact, sans-serif; transform: skew(-7deg);
   box-shadow: 0 0 18px #c8ff0030;
 }
 .brand-mark span { color: #111; }
 .brand-copy { display: flex; flex-direction: column; gap: 1px; }
-.brand-copy strong { font: 800 15px/1 'Barlow Condensed', sans-serif; letter-spacing: 1.5px; }
+.brand-copy strong { font: 800 15px/1 'Arial Narrow', Impact, sans-serif; letter-spacing: 1.5px; }
 .brand-copy strong span { color: var(--acid); }
 .brand-copy small, .chaos-status, .address-hint, .quick-links button, .home-footer, .eyebrow {
-  font-family: 'DM Mono', monospace; letter-spacing: .8px;
+  font-family: Consolas, 'Courier New', monospace; letter-spacing: .8px;
 }
 .brand-copy small { color: #777f80; font-size: 8px; }
 .title-spacer { flex: 1; }
@@ -87,7 +85,7 @@ button { color: inherit; }
 .chaos-toggle {
   height: 32px; display: flex; align-items: center; gap: 7px; padding: 0 11px;
   border: 1px solid #536100; border-radius: 7px; background: #22290d;
-  color: var(--acid); font: 500 9px 'DM Mono', monospace; letter-spacing: .7px; cursor: pointer;
+  color: var(--acid); font: 500 9px Consolas, 'Courier New', monospace; letter-spacing: .7px; cursor: pointer;
 }
 .toggle-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--acid); box-shadow: 0 0 8px var(--acid); }
 .chaos-toggle[aria-pressed="false"] { color: #a5acab; border-color: #343a3b; background: #171a1b; }
@@ -121,7 +119,7 @@ button { color: inherit; }
 .hero-search input { font-size: 12px; }
 .hero-search button {
   height: 38px; padding: 0 15px; border: 0; border-radius: 6px; cursor: pointer;
-  background: var(--acid); color: #111; font: 800 10px 'DM Mono', monospace; letter-spacing: .5px;
+  background: var(--acid); color: #111; font: 800 10px Consolas, 'Courier New', monospace; letter-spacing: .5px;
 }
 .hero-search button:hover { background: #e0ff69; box-shadow: 0 0 20px #c8ff0040; }
 .hero-search button b { margin-left: 8px; font-size: 14px; }
