@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "A chaotic, customizable Electron browser",
   "author": "tropical-express",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "electron": "45.3.2",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "26.18.0"
   },
   "build": {
     "appId": "com.packgod.browser",
@@ -39,8 +39,18 @@
     "win": {
       "icon": "assets/icon.ico",
       "target": [
-        { "target": "nsis", "arch": ["x64"] },
-        { "target": "portable", "arch": ["x64"] }
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
       ]
     },
     "nsis": {
@@ -52,10 +62,15 @@
     "linux": {
       "icon": "assets/icon.png",
       "category": "Network",
-      "target": ["deb", "AppImage"]
+      "target": [
+        "deb",
+        "AppImage"
+      ]
     },
     "mac": {
-      "target": ["dmg"]
+      "target": [
+        "dmg"
+      ]
     }
   }
 }
