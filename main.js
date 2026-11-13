@@ -230,19 +230,30 @@ function createWindow() {
   mainWindow.on("closed", () => { mainWindow = null; });
 }
 
-ipcMain.handle("browser:get-state", () => ({
+function requireTrustedUi(event) {
+  if (!mainWindow || event.sender !== mainWindow.webContents) {
+    throw new Error("Blocked IPC from an untrusted renderer");
+  }
+}
+
+ipcMain.handle("browser:get-state", (event) => {
+  requireTrustedUi(event);
+  return ({
   tabs: [...tabs.values()].map(tabSnapshot),
   activeTabId,
   active: tabs.has(activeTabId) ? tabSnapshot(tabs.get(activeTabId)) : null
-}));
-ipcMain.handle("browser:new-tab", (_event, url) => createTab(url));
-ipcMain.handle("browser:activate-tab", (_event, id) => activateTab(String(id)));
-ipcMain.handle("browser:close-tab", (_event, id) => closeTab(String(id)));
-ipcMain.handle("browser:navigate", (_event, id, url) => {
+  });
+});
+ipcMain.handle("browser:new-tab", (event, url) => { requireTrustedUi(event); return createTab(url); });
+ipcMain.handle("browser:activate-tab", (event, id) => { requireTrustedUi(event); return activateTab(String(id)); });
+ipcMain.handle("browser:close-tab", (event, id) => { requireTrustedUi(event); return closeTab(String(id)); });
+ipcMain.handle("browser:navigate", (event, id, url) => {
+  requireTrustedUi(event);
   const tab = tabs.get(String(id));
   if (tab) navigateTab(tab, url);
 });
-ipcMain.handle("browser:command", (_event, id, command) => {
+ipcMain.handle("browser:command", (event, id, command) => {
+  requireTrustedUi(event);
   const tab = tabs.get(String(id));
   const contents = tab?.view?.webContents;
   if (!tab) return;
