@@ -1,100 +1,121 @@
-const bootScreen = document.getElementById("bootScreen");
+const $ = (id) => document.getElementById(id);
+const tabsElement = $("tabs");
+const addressInput = $("url");
+const homePage = $("homePage");
+const statusText = $("statusText");
+const chaosToggle = $("chaosToggle");
 
-const app = document.getElementById("app");
+let browserState = { tabs: [], activeTabId: null, active: null };
+let chaosEnabled = true;
 
-const input = document.getElementById("url");
-const button = document.getElementById("go");
-const webview = document.getElementById("webview");
-
-// ----------------------
-// SAFETY CHECKS
-// ----------------------
-if (!bootScreen || !app || !input || !webview) {
-  console.error("Missing DOM elements");
+function activeId() {
+  return browserState.activeTabId;
 }
 
-// ----------------------
-// SOUND
-// ----------------------
-const bootSound = new Audio("assets/muycaliente.mp3");
-bootSound.preload = "auto";
+function renderTabs() {
+  tabsElement.replaceChildren();
+  for (const tab of browserState.tabs) {
+    const item = document.createElement("div");
+    item.className = "tab" + (tab.active ? " active" : "");
+    item.title = tab.url;
 
-// ----------------------
-// URL FIXER (IMPORTANT)
-// ----------------------
-function fixUrl(url) {
-  url = url.trim();
+    const label = document.createElement("button");
+    label.className = "tab-label";
+    label.type = "button";
+    label.textContent = tab.title || "New Tab";
+    label.addEventListener("click", () => window.packgod.activateTab(tab.id));
 
-  if (!url) return "https://google.com";
+    const close = document.createElement("button");
+    close.className = "tab-close";
+    close.type = "button";
+    close.textContent = "×";
+    close.title = "Close tab";
+    close.setAttribute("aria-label", "Close tab");
+    close.addEventListener("click", (event) => {
+      event.stopPropagation();
+      window.packgod.closeTab(tab.id);
+    });
 
-  if (
-    !url.startsWith("http://") &&
-    !url.startsWith("https://")
-  ) {
-    return "https://" + url;
+    item.append(label, close);
+    item.addEventListener("click", () => window.packgod.activateTab(tab.id));
+    tabsElement.append(item);
   }
-
-  return url;
 }
 
-// ----------------------
-// ENTER APP
-// ----------------------
-function enterApp() {
-  console.log("Boot clicked");
+function renderState(state) {
+  browserState = state;
+  renderTabs();
 
-  try {
-    bootSound.currentTime = 0;
-    bootSound.volume = 1.0;
+  const active = state.active;
+  const isHome = !active || active.url === "packgod://newtab";
+  homePage.hidden = !isHome;
 
-    const playPromise = bootSound.play();
-
-    if (playPromise !== undefined) {
-      playPromise.catch(err => {
-        console.log("Audio blocked:", err);
-      });
-    }
-  } catch (e) {
-    console.log("Audio error:", e);
+  if (active) {
+    addressInput.value = isHome ? "" : active.url;
+    addressInput.placeholder = "Search the web or enter an address…";
+    $("back").disabled = !active.canGoBack;
+    $("forward").disabled = !active.canGoForward;
+    $("reload").disabled = isHome;
+    statusText.textContent = active.loading ? "LOADING…" : "READY WHEN YOU ARE.";
   }
-
-  bootScreen.style.opacity = "0";
-
-  setTimeout(() => {
-    bootScreen.style.display = "none";
-    app.style.display = "flex";
-  }, 250);
 }
 
-// ----------------------
-// EVENTS (BOOT)
-// ----------------------
-bootScreen?.addEventListener("click", enterApp);
-
-// ----------------------
-// NAVIGATION
-// ----------------------
-function go() {
-  let url = fixUrl(input.value);
-
-  console.log("Loading:", url);
-
-  webview.src = url;
-  input.value = url;
+async function navigate(value) {
+  if (!activeId()) await window.packgod.newTab();
+  const id = activeId();
+  await window.packgod.navigate(id, value);
 }
 
-// ----------------------
-// BUTTON + ENTER KEY
-// ----------------------
-button.addEventListener("click", go);
+$("addressForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  navigate(addressInput.value);
+});
+$("heroSearch").addEventListener("submit", (event) => {
+  event.preventDefault();
+  navigate($("heroInput").value);
+});
+$("newTab").addEventListener("click", () => window.packgod.newTab());
+$("back").addEventListener("click", () => window.packgod.command(activeId(), "back"));
+$("forward").addEventListener("click", () => window.packgod.command(activeId(), "forward"));
+$("reload").addEventListener("click", () => window.packgod.command(activeId(), "reload"));
+$("home").addEventListener("click", () => window.packgod.command(activeId(), "home"));
 
-input.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") go();
+document.querySelectorAll("[data-url]").forEach((button) => {
+  button.addEventListener("click", () => navigate(button.dataset.url));
 });
 
-// ----------------------
-// OPTIONAL: SYNC URL BAR
-// ----------------------
-webview.addEventListener("did-navigate", (e) => {
-  input.value = e.url;
+chaosToggle.addEventListener("click", () => {
+  chaosEnabled = !chaosEnabled;
+  chaosToggle.setAttribute("aria-pressed", String(chaosEnabled));
+  document.body.classList.toggle("chaos-off", !chaosEnabled);
+});
+
+document.addEventListener("keydown", (event) => {
+  const key = event.key.toLowerCase();
+  if ((event.ctrlKey || event.metaKey) && key === "l") {
+    event.preventDefault();
+    addressInput.focus();
+    addressInput.select();
+  } else if ((event.ctrlKey || event.metaKey) && key === "t") {
+    event.preventDefault();
+    window.packgod.newTab();
+  } else if ((event.ctrlKey || event.metaKey) && key === "w") {
+    event.preventDefault();
+    if (activeId()) window.packgod.closeTab(activeId());
+  } else if ((event.ctrlKey || event.metaKey) && key === "r") {
+    event.preventDefault();
+    window.packgod.command(activeId(), "reload");
+  } else if (event.altKey && key === "arrowleft") {
+    window.packgod.command(activeId(), "back");
+  } else if (event.altKey && key === "arrowright") {
+    window.packgod.command(activeId(), "forward");
+  } else if (key === "escape" && document.activeElement === addressInput) {
+    addressInput.blur();
+  }
+});
+
+window.packgod.onState(renderState);
+window.packgod.getState().then(renderState).catch((error) => {
+  console.error("Could not initialize browser UI:", error);
+  statusText.textContent = "BROWSER INITIALIZATION FAILED.";
 });
