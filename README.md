@@ -1,88 +1,63 @@
 # 💀 Packgod Browser
-![GitHub stars](https://img.shields.io/github/stars/tropical-express/packgod-browser?style=flat)
-![GitHub forks](https://img.shields.io/github/forks/tropical-express/packgod-browser?style=flat)
-![GitHub issues](https://img.shields.io/github/issues/tropical-express/packgod-browser?style=flat)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/tropical-express/packgod-browser?style=flat)
-![license](https://img.shields.io/github/license/tropical-express/packgod-browser?style=flat)
-![last commit](https://img.shields.io/github/last-commit/tropical-express/packgod-browser?style=flat)
-![electron](https://img.shields.io/badge/electron-framework-47848F?style=flat&logo=electron)
-![node](https://img.shields.io/badge/node.js-18%2B-339933?style=flat&logo=node.js&logoColor=white)
-![chromium](https://img.shields.io/badge/chromium-based-4285F4?style=flat&logo=googlechrome&logoColor=white)
-![status](https://img.shields.io/badge/status-experimental-orange?style=flat)
 
-A chaotic Electron-based custom browser with a boot screen, sound
-effects, and meme-style UI.
+**Packgod Browser 2.0** is a chaotic, dark-themed desktop browser built with Electron and Chromium.
 
-------------------------------------------------------------------------
+> The 2.0 development branch is an active rebuild. Some planned features are not implemented yet.
 
-## 🚀 Features
+## Current 2.0 foundation
 
--   💀 Boot screen with clickable entry
--   🔊 Startup sound effects (`muycaliente.mp3`)
--   🌐 Built-in webview browser
--   🎭 Random roast system
--   ⚡ Glitch visual effects
--   🎮 Chaotic UI styling
+- Electron 45.3.2
+- Chromium-powered browsing through Electron's `WebContentsView`
+- Multi-tab creation, activation, and closing
+- Address bar with web search and URL normalization
+- Back, forward, reload, and home controls
+- Keyboard shortcuts: `Ctrl+L`, `Ctrl+T`, `Ctrl+W`, `Ctrl+R`, `Alt+←`, `Alt+→`
+- Chaotic neon-green new-tab dashboard and optional calmer appearance
+- Context isolation, sandboxed renderers, disabled Node integration, and a narrow preload API
+- Persistent browser session partition
 
-------------------------------------------------------------------------
+## Planned work
 
-## 📦 Download
+- Bookmarks and browsing history
+- Download manager
+- Settings and search-engine preferences
+- Roast and sound-effect system, with user controls
+- More customization and accessibility options
+- Automated tests and release pipeline
 
-Go to the **Releases** section of this repository to download:
+## Development setup
 
--   🪟 Windows Installer (.exe)
--   📁 Source archive (.tar.xz)
+Requirements:
+- Node.js 22.12 or newer
+- npm
 
-------------------------------------------------------------------------
+```bash
+git clone https://github.com/tropical-express/packgod-browser.git
+cd packgod-browser
+git switch v2-development
+npm install
+npm start
+```
 
-## 🛠️ Installation (Dev Setup)
+## Packaging
 
-### 1. Clone the repo
-
-``git clone https://github.com/tropical-express/packgod-browser.git 
-cd packgod-browser``
-
-### 2. Install dependencies
-
-``npm install``
-
-### 3. Run the app
-
-``npm start``
-
-------------------------------------------------------------------------
-
-## 📁 Project Structure
-
-packgod-browser/ ├── assets/ (images + audio) ├── utils/ (helper
-functions) ├── dist/ (build output) ├── main.js ├── renderer.js ├──
-preload.js ├── index.html ├── styles.css ├── package.json
-
-------------------------------------------------------------------------
-
-## 🔊 Audio System
-
--   Boot sound: assets/muycaliente.mp3
--   Click sounds
--   Roast + chaos audio effects
-
-------------------------------------------------------------------------
-
-## ⚠️ Notes
-
--   Do NOT commit node_modules or dist
--   Requires Node.js + Electron
-
-------------------------------------------------------------------------
-
-## 🧠 Build EXE
-
+```bash
+npm run pack
 npm run dist
+```
 
-Output: dist/
+Build output is written to `dist/`. Windows NSIS and portable builds, plus Linux DEB and AppImage targets, are configured in `package.json`.
 
-------------------------------------------------------------------------
+## Security notes
 
-## 💀 Author
+- Website content runs in separate `WebContentsView` instances, not in the privileged UI renderer.
+- The UI renderer uses context isolation, sandboxing, and no Node integration.
+- The preload exposes only the browser operations required by the UI.
+- Site permission requests are denied by default in this initial foundation.
+- Only HTTP and HTTPS navigation is accepted from the address bar.
 
-Tropical Express
+This is an early development foundation, not yet a finished or security-audited browser. Do not use it as a replacement for a fully maintained mainstream browser for sensitive activity.
+
+## License
+
+Packgod Browser is distributed under the GNU General Public License v3.0. See [LICENSE](LICENSE).
