@@ -1,7 +1,7 @@
 {
   "name": "packgod-browser",
-  "version": "1.1.0",
-  "description": "Custom Electron browser project",
+  "version": "2.0.0",
+  "description": "A chaotic, customizable Electron browser",
   "author": "tropical-express",
   "license": "MIT",
   "main": "main.js",
@@ -9,11 +9,13 @@
     "start": "electron .",
     "dev": "electron .",
     "dist": "electron-builder",
-    "pack": "electron-builder --dir",
-    "release": "electron-builder --publish always"
+    "pack": "electron-builder --dir"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   },
   "devDependencies": {
-    "electron": "^30.0.0",
+    "electron": "45.3.2",
     "electron-builder": "^24.13.3"
   },
   "build": {
@@ -34,26 +36,11 @@
     ],
     "asar": true,
     "compression": "maximum",
-    "publish": [
-      {
-        "provider": "github"
-      }
-    ],
     "win": {
       "icon": "assets/icon.ico",
       "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "portable",
-          "arch": [
-            "x64"
-          ]
-        }
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
       ]
     },
     "nsis": {
@@ -65,15 +52,10 @@
     "linux": {
       "icon": "assets/icon.png",
       "category": "Network",
-      "target": [
-        "deb",
-        "AppImage"
-      ]
+      "target": ["deb", "AppImage"]
     },
     "mac": {
-      "target": [
-        "dmg"
-      ]
+      "target": ["dmg"]
     }
   }
 }
